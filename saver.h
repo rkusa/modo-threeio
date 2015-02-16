@@ -56,11 +56,12 @@ private:
     static const unsigned short kFaceColor = 64;
     static const unsigned short kFaceVertexColor = 128;
     
-    constexpr static const char* const kUserValueThreeSaveHidden = "threeio.save.hidden";
-    constexpr static const char* const kUserValueThreeSaveNormals = "threeio.save.normals";
-    constexpr static const char* const kUserValueThreeGeometryType = "threeio.geometry.type";
-    constexpr static const char* const kUserValueThreePrecisionEnabled = "threeio.precision.enabled";
-    constexpr static const char* const kUserValueThreePrecisionValue = "threeio.precision.value";
+    constexpr static const char* const kUserValueSaveHidden = "threeio.save.hidden";
+    constexpr static const char* const kUserValueSaveNormals = "threeio.save.normals";
+    constexpr static const char* const kUserValueGeometryType = "threeio.geometry.type";
+    constexpr static const char* const kUserValuePrecisionEnabled = "threeio.precision.enabled";
+    constexpr static const char* const kUserValuePrecisionValue = "threeio.precision.value";
+    constexpr static const char* const kUserValueJSONPretty = "threeio.json.pretty";
     
     enum PolyPass
     {
@@ -83,6 +84,7 @@ private:
     GeometryType opt_geometry_type_ = kGeometry;
     bool opt_precision_enabled_ = false;
     unsigned opt_precision_value_ = 6;
+    bool opt_json_pretty_ = true;
     
     CLxUser_SceneGraph scene_graph_;
     CLxUser_ItemGraph  item_graph_;

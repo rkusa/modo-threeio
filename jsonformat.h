@@ -22,6 +22,9 @@ public:
 
     const unsigned precision() const;
     void precision(unsigned);
+    
+    const bool pretty() const;
+    void pretty(bool);
 
     void Write(std::nullptr_t);
     void Write(bool);
@@ -63,6 +66,7 @@ private:
 
     unsigned precision_ = 13;
     const char* precision_format_ = "%.13g";
+    bool pretty_ = true;
     bool enabled_ = false;
     std::ofstream* os_ = nullptr;
     std::stack<Context> context_;

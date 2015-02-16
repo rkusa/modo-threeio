@@ -98,7 +98,6 @@ bool THREESceneSaver::WriteObject()
     //    HemisphereLight
     //    Line
     //    Sprite
-    //    Group
     
     LXtMatrix4 transform = {
         { 1, 0, 0, 0 },
@@ -288,24 +287,28 @@ void THREESceneSaver::GetOptions()
 {
     CLxReadUserValue	 ruv;
     
-    if (ruv.Query(kUserValueThreeSaveHidden)) {
+    if (ruv.Query(kUserValueSaveHidden)) {
         opt_save_hidden_ = ruv.GetInt() ? true : false;
     }
     
-    if (ruv.Query(kUserValueThreeSaveNormals)) {
+    if (ruv.Query(kUserValueSaveNormals)) {
         opt_save_normals_ = ruv.GetInt() ? true : false;
     }
     
-    if (ruv.Query(kUserValueThreeGeometryType)) {
+    if (ruv.Query(kUserValueGeometryType)) {
         opt_geometry_type_ = (GeometryType)ruv.GetInt();
     }
     
-    if (ruv.Query(kUserValueThreePrecisionEnabled)) {
+    if (ruv.Query(kUserValuePrecisionEnabled)) {
         opt_precision_enabled_ = ruv.GetInt() ? true : false;
     }
     
-    if (ruv.Query(kUserValueThreePrecisionValue)) {
+    if (ruv.Query(kUserValuePrecisionValue)) {
         opt_precision_value_ = ruv.GetInt();
+    }
+    
+    if (ruv.Query(kUserValueJSONPretty)) {
+        opt_json_pretty_ = ruv.GetInt() ? true : false;
     }
 }
 
@@ -318,14 +321,11 @@ void THREESceneSaver::ss_Verify()
 
 LxResult THREESceneSaver::ss_Save()
 {
-    if (!ReallySaving()) {
-        return LXe_OK;
-    }
-    
     GetOptions();
     if (opt_precision_enabled_) {
         precision(opt_precision_value_);
     }
+    pretty(opt_json_pretty_);
     
     LxResult result(LXe_OK);
     log.Setup();
@@ -416,13 +416,17 @@ void THREESceneSaver::ss_Polygon()
                 double position[3];
                 PntPosition(position);
                 
+                if (!ReallySaving()) {
+                    continue;
+                }
+                
                 indices.push_back(positions_.insert(position));
             }
             
             if (opt_save_normals_) {
                 // face normal
                 double face_normal[3];
-                if (PolyNormal(face_normal)) {
+                if (PolyNormal(face_normal) && ReallySaving()) {
                     mask += kFaceNormal;
                     
                     indices.push_back(normals_.insert(face_normal));
@@ -442,6 +446,10 @@ void THREESceneSaver::ss_Polygon()
                         // arbitrary unit normal
                         vertex_normal[0] = 1.0;
                         vertex_normal[1] = vertex_normal[2] = 0.0;
+                    }
+                    
+                    if (!ReallySaving()) {
+                        continue;
                     }
                 
                     if (hasVertexNormals) {
@@ -484,6 +492,10 @@ void THREESceneSaver::ss_Polygon()
                             normal[1] = normal[2] = 0.0;
                         }
                     }
+                }
+                
+                if (!ReallySaving()) {
+                    continue;
                 }
                 
                 auto vertex_index = vertices_.insert(Vertex(position, normal));

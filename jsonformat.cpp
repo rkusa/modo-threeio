@@ -2,6 +2,8 @@
 
 #include <assert.h>
 
+#define ENABLED if (!enabled_) return;
+
 JSONFormat::JSONFormat()
 {
 }
@@ -61,12 +63,22 @@ void JSONFormat::precision(unsigned precision)
     precision_format_ = strdup(buf);
 }
 
+const bool JSONFormat::pretty() const
+{
+    return pretty_;
+}
+
+void JSONFormat::pretty(bool pretty)
+{
+    pretty_ = pretty;
+}
+
 void JSONFormat::BeforeWrite()
 {
     if (context_.size() > 0 && context_.top() == kValue) {
         context_.pop();
     } else if (context_.size() > 0 && context_.top() == kArray && has_value_) {
-        *os_ << ", ";
+        *os_ << (pretty_ ? ", " : ",");
     }
     
     has_value_ = true;
@@ -74,6 +86,10 @@ void JSONFormat::BeforeWrite()
 
 void JSONFormat::WriteIndention()
 {
+    if (!pretty_) {
+        return;
+    }
+    
     for (unsigned i = 0; i < indention_; ++i) {
         *os_ << kIndentWith;
     }
@@ -81,11 +97,17 @@ void JSONFormat::WriteIndention()
 
 void JSONFormat::Newline()
 {
+    if (!pretty_) {
+        return;
+    }
+    
     *os_ << kLineBreakWith;
 }
 
 void JSONFormat::Write(std::nullptr_t)
 {
+    ENABLED
+    
     BeforeWrite();
     
     *os_ << "null";
@@ -93,6 +115,8 @@ void JSONFormat::Write(std::nullptr_t)
 
 void JSONFormat::Write(bool val)
 {
+    ENABLED
+    
     BeforeWrite();
     
     *os_ << (val ? "true" : "false");
@@ -100,6 +124,8 @@ void JSONFormat::Write(bool val)
 
 void JSONFormat::Write(int val)
 {
+    ENABLED
+    
     BeforeWrite();
     
     char buf[32];
@@ -109,6 +135,8 @@ void JSONFormat::Write(int val)
 
 void JSONFormat::Write(unsigned val)
 {
+    ENABLED
+    
     BeforeWrite();
     
     char buf[32];
@@ -132,6 +160,8 @@ void morphNumericString(char *s) {
 
 void JSONFormat::Write(double val)
 {
+    ENABLED
+    
     BeforeWrite();
     
     char buf[32];
@@ -145,6 +175,8 @@ void JSONFormat::Write(double val)
 
 void JSONFormat::Write(const char* val)
 {
+    ENABLED
+    
     BeforeWrite();
     
     *os_ << '"';
@@ -194,6 +226,8 @@ void JSONFormat::Write(std::string val)
 
 void JSONFormat::WriteKey(std::string str)
 {
+    ENABLED
+    
     assert(context_.size() > 0 && context_.top() == kObject);
     
     if (has_value_) {
@@ -202,7 +236,7 @@ void JSONFormat::WriteKey(std::string str)
     Newline();
     WriteIndention();
     Write(str);
-    *os_ << ": ";
+    *os_ << (pretty_ ? ": " : ":");
     
     context_.push(kValue);
 }
@@ -245,6 +279,8 @@ void JSONFormat::Property(std::string key, const char* val)
 
 void JSONFormat::StartObject()
 {
+    ENABLED
+    
     assert(context_.size() == 0 || context_.top() == kValue || context_.top() == kArray);
     
     BeforeWrite();
@@ -264,6 +300,8 @@ void JSONFormat::StartObject(std::string key)
 
 void JSONFormat::EndObject()
 {
+    ENABLED
+    
     assert(context_.size() > 0 && context_.top() == kObject);
     context_.pop();
     
@@ -279,6 +317,8 @@ void JSONFormat::EndObject()
 
 void JSONFormat::StartArray()
 {
+    ENABLED
+    
     assert(context_.size() == 0 || context_.top() == kValue);
     
     BeforeWrite();
@@ -297,6 +337,8 @@ void JSONFormat::StartArray(std::string key)
 
 void JSONFormat::EndArray()
 {
+    ENABLED
+    
     assert(context_.size() > 0 && context_.top() == kArray);
     context_.pop();
     has_value_ = true;
