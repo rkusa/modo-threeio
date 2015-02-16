@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:io_scene_three.xcodeproj">
+      location = "self:threeio.xcodeproj">
    </FileRef>
 </Workspace>
