@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2832868C1A8AB2B4001E12B1 /* json_format.h in Headers */ = {isa = PBXBuildFile; fileRef = 2832868A1A8AB2B4001E12B1 /* json_format.h */; };
-		2832868D1A8AB2B4001E12B1 /* json_format.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2832868B1A8AB2B4001E12B1 /* json_format.cpp */; };
-		283CC09A1A896E0C0031C771 /* threesaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283CC0991A896E0C0031C771 /* threesaver.cpp */; };
-		2863C4671A8FF75100BC7B60 /* threelogmessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 2863C4651A8FF75100BC7B60 /* threelogmessage.h */; };
+		2832868C1A8AB2B4001E12B1 /* jsonformat.h in Headers */ = {isa = PBXBuildFile; fileRef = 2832868A1A8AB2B4001E12B1 /* jsonformat.h */; };
+		2832868D1A8AB2B4001E12B1 /* jsonformat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2832868B1A8AB2B4001E12B1 /* jsonformat.cpp */; };
+		283CC09A1A896E0C0031C771 /* saver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283CC0991A896E0C0031C771 /* saver.cpp */; };
+		2863C4671A8FF75100BC7B60 /* logmessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 2863C4651A8FF75100BC7B60 /* logmessage.h */; };
+		2863C4761A92A2B300BC7B60 /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = 2863C4751A92A2B300BC7B60 /* types.h */; };
 		28B7C00D1A896E4B00EC9111 /* libcommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 283CBD421A896D8A0031C771 /* libcommon.a */; };
 		28E87A721A897357002319C9 /* clean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28E87A5E1A897357002319C9 /* clean.cpp */; };
 		28E87A731A897357002319C9 /* cwrap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28E87A5F1A897357002319C9 /* cwrap.cpp */; };
@@ -234,7 +235,7 @@
 		28E87C181A897369002319C9 /* lxw_vmodel.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 28E87B4E1A897369002319C9 /* lxw_vmodel.hpp */; };
 		28E87C191A897369002319C9 /* lxw_volume.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 28E87B4F1A897369002319C9 /* lxw_volume.hpp */; };
 		28E87C1A1A897369002319C9 /* lxw_vp.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 28E87B501A897369002319C9 /* lxw_vp.hpp */; };
-		28E87C461A897870002319C9 /* threesaver.h in Headers */ = {isa = PBXBuildFile; fileRef = 28E87C451A897870002319C9 /* threesaver.h */; };
+		28E87C461A897870002319C9 /* saver.h in Headers */ = {isa = PBXBuildFile; fileRef = 28E87C451A897870002319C9 /* saver.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -248,12 +249,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2832868A1A8AB2B4001E12B1 /* json_format.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = json_format.h; sourceTree = "<group>"; };
-		2832868B1A8AB2B4001E12B1 /* json_format.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = json_format.cpp; sourceTree = "<group>"; };
+		2832868A1A8AB2B4001E12B1 /* jsonformat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsonformat.h; sourceTree = "<group>"; };
+		2832868B1A8AB2B4001E12B1 /* jsonformat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jsonformat.cpp; sourceTree = "<group>"; };
 		283CBD371A896D540031C771 /* threeio.lx */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = threeio.lx; sourceTree = BUILT_PRODUCTS_DIR; };
 		283CBD421A896D8A0031C771 /* libcommon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libcommon.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		283CC0991A896E0C0031C771 /* threesaver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = threesaver.cpp; sourceTree = "<group>"; };
-		2863C4651A8FF75100BC7B60 /* threelogmessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threelogmessage.h; sourceTree = "<group>"; };
+		283CC0991A896E0C0031C771 /* saver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = saver.cpp; sourceTree = "<group>"; };
+		2863C4651A8FF75100BC7B60 /* logmessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = logmessage.h; sourceTree = "<group>"; };
+		2863C4751A92A2B300BC7B60 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		28E87A5E1A897357002319C9 /* clean.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = clean.cpp; sourceTree = "<group>"; };
 		28E87A5F1A897357002319C9 /* cwrap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cwrap.cpp; sourceTree = "<group>"; };
 		28E87A601A897357002319C9 /* lxu_attributes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lxu_attributes.cpp; sourceTree = "<group>"; };
@@ -476,7 +478,7 @@
 		28E87B4E1A897369002319C9 /* lxw_vmodel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = lxw_vmodel.hpp; sourceTree = "<group>"; };
 		28E87B4F1A897369002319C9 /* lxw_volume.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = lxw_volume.hpp; sourceTree = "<group>"; };
 		28E87B501A897369002319C9 /* lxw_vp.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = lxw_vp.hpp; sourceTree = "<group>"; };
-		28E87C451A897870002319C9 /* threesaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threesaver.h; sourceTree = "<group>"; };
+		28E87C451A897870002319C9 /* saver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = saver.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -501,11 +503,12 @@
 		283CBD2E1A896D540031C771 = {
 			isa = PBXGroup;
 			children = (
-				28E87C451A897870002319C9 /* threesaver.h */,
-				283CC0991A896E0C0031C771 /* threesaver.cpp */,
-				2863C4651A8FF75100BC7B60 /* threelogmessage.h */,
-				2832868A1A8AB2B4001E12B1 /* json_format.h */,
-				2832868B1A8AB2B4001E12B1 /* json_format.cpp */,
+				2863C4751A92A2B300BC7B60 /* types.h */,
+				28E87C451A897870002319C9 /* saver.h */,
+				283CC0991A896E0C0031C771 /* saver.cpp */,
+				2863C4651A8FF75100BC7B60 /* logmessage.h */,
+				2832868A1A8AB2B4001E12B1 /* jsonformat.h */,
+				2832868B1A8AB2B4001E12B1 /* jsonformat.cpp */,
 				28E87A861A897369002319C9 /* include */,
 				283CBD381A896D540031C771 /* Products */,
 				28E87A5C1A89711A002319C9 /* Libraries */,
@@ -774,9 +777,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28E87C461A897870002319C9 /* threesaver.h in Headers */,
-				2863C4671A8FF75100BC7B60 /* threelogmessage.h in Headers */,
-				2832868C1A8AB2B4001E12B1 /* json_format.h in Headers */,
+				28E87C461A897870002319C9 /* saver.h in Headers */,
+				2863C4671A8FF75100BC7B60 /* logmessage.h in Headers */,
+				2863C4761A92A2B300BC7B60 /* types.h in Headers */,
+				2832868C1A8AB2B4001E12B1 /* jsonformat.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1067,8 +1071,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2832868D1A8AB2B4001E12B1 /* json_format.cpp in Sources */,
-				283CC09A1A896E0C0031C771 /* threesaver.cpp in Sources */,
+				2832868D1A8AB2B4001E12B1 /* jsonformat.cpp in Sources */,
+				283CC09A1A896E0C0031C771 /* saver.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

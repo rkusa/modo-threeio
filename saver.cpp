@@ -1,4 +1,4 @@
-#include "threesaver.h"
+#include "saver.h"
 
 #include <lxlog.h>
 #include <lxidef.h>
@@ -180,9 +180,9 @@ void THREESceneSaver::WriteGeometries()
         // vertices
         StartArray("vertices");
         for (auto position : positions_) {
-            Write(position[0]);
-            Write(position[1]);
-            Write(position[2]);
+            Write(position.x);
+            Write(position.y);
+            Write(position.z);
         }
         EndArray();
         
@@ -190,9 +190,9 @@ void THREESceneSaver::WriteGeometries()
         if (opt_save_normals_) {
             StartArray("normals");
             for (auto normal : normals_) {
-                Write(normal[0]);
-                Write(normal[1]);
-                Write(normal[2]);
+                Write(normal.x);
+                Write(normal.y);
+                Write(normal.z);
             }
             EndArray(); // normals
         }
@@ -242,9 +242,9 @@ void THREESceneSaver::WriteBufferGeometries()
         StartArray("array");
         for (auto vertex : vertices_) {
             auto position = vertex.position();
-            Write(position[0]);
-            Write(position[1]);
-            Write(position[2]);
+            Write(position.x);
+            Write(position.y);
+            Write(position.z);
         }
         EndArray(); // array
         EndObject(); // position
@@ -257,9 +257,9 @@ void THREESceneSaver::WriteBufferGeometries()
             StartArray("array");
             for (auto vertex : vertices_) {
                 auto normal = vertex.normal();
-                Write(normal[0]);
-                Write(normal[1]);
-                Write(normal[2]);
+                Write(normal.x);
+                Write(normal.y);
+                Write(normal.z);
             }
             EndArray(); // array
             EndObject(); // normal
