@@ -3,6 +3,7 @@
 #include <lxlog.h>
 #include <lxidef.h>
 #include <lxu_queries.hpp>
+#include <lxw_locator.hpp>
 
 THREESceneSaver::THREESceneSaver()
 {
@@ -11,6 +12,8 @@ THREESceneSaver::THREESceneSaver()
 void THREESceneSaver::WriteScene()
 {
     CLxUser_Scene scene = SceneObject();
+    
+    scene.GetChannels(chan_xform_, 0.0);
     
     scene.GetGraph(LXsGRAPH_XFRMCORE, scene_graph_);
     item_graph_.set(scene_graph_);
@@ -32,12 +35,20 @@ void THREESceneSaver::WriteScene()
             continue;
         }
         
+        CLxLoc_Item item;
+        GetItem(item);
+        
+        CLxLoc_Item parent;
+        if (item.Parent(parent)) {
+            continue; // skip non roots
+        }
+        
         StartObject();
         WriteObject();
         EndObject();
     }
     
-    EndArray();
+    EndArray(); // children
     EndObject();
 }
 
@@ -68,7 +79,10 @@ bool THREESceneSaver::WriteObject()
             Property("geometry", ItemIdentity());
             SetItem(item);
         }
-        
+    } else if (ItemIsA(LXsITYPE_GROUPLOCATOR)) {
+        Property("type", "Group");
+    } else if (ItemIsA(LXsITYPE_LOCATOR)) {
+        // don't set type for locator/null mesh
     } else {
         // skip unsupported types
         return false;
@@ -86,16 +100,55 @@ bool THREESceneSaver::WriteObject()
     //    Sprite
     //    Group
     
-    LXtMatrix4 transform;
-    CalculateTransform(item, transform);
+    LXtMatrix4 transform = {
+        { 1, 0, 0, 0 },
+        { 0, 1, 0, 0 },
+        { 0, 0, 1, 0 },
+        { 0, 0, 0, 1 },
+    };
+    
+    CLxLoc_Locator locator;
+    if (locator.set(item)) {
+        locator.LocalTransform4(chan_xform_, transform);
+    }
     
     StartArray("matrix");
-    for (unsigned row = 0; row < 4; ++row) {
-        for (unsigned col = 0; col < 4; ++col) {
-            Write(transform[row][col]);
+    for (unsigned col = 0; col < 4; ++col) {
+        for (unsigned row = 0; row < 4; ++row) {
+            Write(transform[col][row]);
         }
     }
     EndArray();
+    
+    if (!ItemVisible()) {
+        Property("visible", false);
+    }
+    
+    unsigned child_count;
+    item.SubCount(&child_count);
+    
+    if (child_count == 0) {
+        return true; // we're done
+    }
+    
+    StartArray("children");
+    
+    for (unsigned i = 0; i < child_count; ++i) {
+        CLxUser_Item child;
+        item.SubByIndex(i, child);
+        
+        SetItem(child);
+        
+        if (!ItemVisibleForSave() || !ItemSupported()) {
+            continue;
+        }
+        
+        StartObject();
+        WriteObject();
+        EndObject();
+    }
+    
+    EndArray(); // children
     
     return true;
 }
@@ -134,18 +187,20 @@ void THREESceneSaver::WriteGeometries()
         EndArray();
         
         // normals
-        StartArray("normals");
-        for (auto normal : normals_) {
-            Write(normal[0]);
-            Write(normal[1]);
-            Write(normal[2]);
+        if (opt_save_normals_) {
+            StartArray("normals");
+            for (auto normal : normals_) {
+                Write(normal[0]);
+                Write(normal[1]);
+                Write(normal[2]);
+            }
+            EndArray(); // normals
         }
-        EndArray(); // normals
         
         EndObject(); // data
         EndObject(); // geometry
         
-        vertices_.clear();
+        positions_.clear();
         normals_.clear();
     }
 }
@@ -180,7 +235,7 @@ void THREESceneSaver::WriteBufferGeometries()
         EndArray(); // array
         EndObject(); // index
         
-        // vertices
+        // positions
         StartObject("position");
         Property("itemSize", 3);
         Property("type", "Float32Array");
@@ -195,48 +250,62 @@ void THREESceneSaver::WriteBufferGeometries()
         EndObject(); // position
         
         // normals
-        StartObject("normal");
-        Property("itemSize", 3);
-        Property("type", "Float32Array");
-        StartArray("array");
-        for (auto vertex : vertices_) {
-            auto normal = vertex.normal();
-            Write(normal[0]);
-            Write(normal[1]);
-            Write(normal[2]);
+        if (opt_save_normals_) {
+            StartObject("normal");
+            Property("itemSize", 3);
+            Property("type", "Float32Array");
+            StartArray("array");
+            for (auto vertex : vertices_) {
+                auto normal = vertex.normal();
+                Write(normal[0]);
+                Write(normal[1]);
+                Write(normal[2]);
+            }
+            EndArray(); // array
+            EndObject(); // normal
         }
-        EndArray(); // array
-        EndObject(); // normal
         
         EndObject(); // attributes
         EndObject(); // data
         EndObject(); // geometry
         
         vertices_.clear();
-        normals_.clear();
     }
 }
 
 const bool THREESceneSaver::ItemVisibleForSave() const {
-    bool saveItem = ItemVisible();
-    
-    return saveItem;
+    return opt_save_hidden_ || ItemVisible();
 }
 
 const bool THREESceneSaver::ItemSupported() const {
-    return ItemIsA(LXsITYPE_SCENE) ||
-           ItemIsA(LXsITYPE_MESH) ||
-           ItemIsA(LXsITYPE_MESHINST);
+    return ItemIsA(LXsITYPE_MESH) ||
+           ItemIsA(LXsITYPE_MESHINST) ||
+           ItemIsA(LXsITYPE_GROUPLOCATOR) ||
+           ItemIsA(LXsITYPE_LOCATOR);
 }
 
 void THREESceneSaver::GetOptions()
 {
     CLxReadUserValue	 ruv;
     
+    if (ruv.Query(kUserValueThreeSaveHidden)) {
+        opt_save_hidden_ = ruv.GetInt() ? true : false;
+    }
+    
+    if (ruv.Query(kUserValueThreeSaveNormals)) {
+        opt_save_normals_ = ruv.GetInt() ? true : false;
+    }
+    
     if (ruv.Query(kUserValueThreeGeometryType)) {
         opt_geometry_type_ = (GeometryType)ruv.GetInt();
-    } else {
-        opt_geometry_type_ = kGeometry;
+    }
+    
+    if (ruv.Query(kUserValueThreePrecisionEnabled)) {
+        opt_precision_enabled_ = ruv.GetInt() ? true : false;
+    }
+    
+    if (ruv.Query(kUserValueThreePrecisionValue)) {
+        opt_precision_value_ = ruv.GetInt();
     }
 }
 
@@ -254,6 +323,9 @@ LxResult THREESceneSaver::ss_Save()
     }
     
     GetOptions();
+    if (opt_precision_enabled_) {
+        precision(opt_precision_value_);
+    }
     
     LxResult result(LXe_OK);
     log.Setup();
@@ -347,32 +419,34 @@ void THREESceneSaver::ss_Polygon()
                 indices.push_back(positions_.insert(position));
             }
             
-            // face normal
-            double face_normal[3];
-            if (PolyNormal(face_normal)) {
-                mask += kFaceNormal;
-                
-                indices.push_back(normals_.insert(face_normal));
-            }
-            
-            // vertex normals
-            bool hasVertexNormals = false;
-            for (unsigned i = 0; i < num_vert; i++) {
-                double vertex_normal[3];
-                
-                if (PolyNormal(vertex_normal, PolyVertex(i))) {
-                    if (i == 0) {
-                        hasVertexNormals = true;
-                        mask += kFaceVertexNormal;
-                    }
-                } else {
-                    // arbitrary unit normal
-                    vertex_normal[0] = 1.0;
-                    vertex_normal[1] = vertex_normal[2] = 0.0;
+            if (opt_save_normals_) {
+                // face normal
+                double face_normal[3];
+                if (PolyNormal(face_normal)) {
+                    mask += kFaceNormal;
+                    
+                    indices.push_back(normals_.insert(face_normal));
                 }
-            
-                if (hasVertexNormals) {
-                    indices.push_back(normals_.insert(vertex_normal));
+                
+                // vertex normals
+                bool hasVertexNormals = false;
+                for (unsigned i = 0; i < num_vert; i++) {
+                    double vertex_normal[3];
+                    
+                    if (PolyNormal(vertex_normal, PolyVertex(i))) {
+                        if (i == 0) {
+                            hasVertexNormals = true;
+                            mask += kFaceVertexNormal;
+                        }
+                    } else {
+                        // arbitrary unit normal
+                        vertex_normal[0] = 1.0;
+                        vertex_normal[1] = vertex_normal[2] = 0.0;
+                    }
+                
+                    if (hasVertexNormals) {
+                        indices.push_back(normals_.insert(vertex_normal));
+                    }
                 }
             }
             
@@ -399,14 +473,16 @@ void THREESceneSaver::ss_Polygon()
                 double position[3];
                 PntPosition(position);
                 
-                double normal[3];
-                // try vertex normal
-                if (!PolyNormal(normal, vertex_id)) {
-                    // try face normal
-                    if (!PolyNormal(normal)) {
-                        // arbitrary unit normal
-                        normal[0] = 1.0;
-                        normal[1] = normal[2] = 0.0;
+                double normal[3] = { 0, 0, 0 };
+                if (opt_save_normals_) {
+                    // try vertex normal
+                    if (!PolyNormal(normal, vertex_id)) {
+                        // try face normal
+                        if (!PolyNormal(normal)) {
+                            // arbitrary unit normal
+                            normal[0] = 1.0;
+                            normal[1] = normal[2] = 0.0;
+                        }
                     }
                 }
                 
@@ -415,24 +491,6 @@ void THREESceneSaver::ss_Polygon()
             }
             
             break;
-        }
-        case kPolypassNormal:
-        {
-            unsigned num_vert = PolyNumVerts();
-            
-            for (unsigned i = 0; i < num_vert; i++) {
-                double normal_vector[3];
-                
-                if (!PolyNormal(normal_vector, PolyVertex(i))) {
-                    // arbitrary unit normal
-                    normal_vector[0] = 1.0;
-                    normal_vector[1] = normal_vector[2] = 0.0;
-                }
-                
-                Write(normal_vector[0]);
-                Write(normal_vector[1]);
-                Write(normal_vector[2]);
-            }
         }
     }
 }

@@ -43,6 +43,24 @@ void JSONFormat::ff_Cleanup()
     }
 }
 
+const unsigned JSONFormat::precision() const
+{
+    return precision_;
+}
+
+void JSONFormat::precision(unsigned precision)
+{
+    if (precision > 13) {
+        precision = 13;
+    }
+    
+    precision_ = precision;
+    
+    char buf[5];
+    snprintf(buf, sizeof buf, "%%.%df", precision);
+    precision_format_ = strdup(buf);
+}
+
 void JSONFormat::BeforeWrite()
 {
     if (context_.size() > 0 && context_.top() == kValue) {
@@ -98,12 +116,30 @@ void JSONFormat::Write(unsigned val)
     *os_ << buf;
 }
 
+// http://stackoverflow.com/questions/2225956/what-is-the-sprintf-pattern-to-output-floats-without-ending-zeros
+void morphNumericString(char *s) {
+    char *p = strchr(s,'.');
+    if (p == NULL) {
+        strcat (s, ".0");
+        return;
+    }
+    
+    p = &(p[strlen(p)-1]);
+    while ((p != s) && (*p == '0') && (*(p-1) != '.')) {
+        *p-- = '\0';
+    }
+}
+
 void JSONFormat::Write(double val)
 {
     BeforeWrite();
     
     char buf[32];
-    snprintf(buf, sizeof buf, "%.17g", val);
+    snprintf(buf, sizeof buf, precision_format_, val);
+    
+    // remove trailing zeros
+    morphNumericString(buf);
+    
     *os_ << buf;
 }
 

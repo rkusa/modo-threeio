@@ -10,8 +10,6 @@
 		2832868C1A8AB2B4001E12B1 /* json_format.h in Headers */ = {isa = PBXBuildFile; fileRef = 2832868A1A8AB2B4001E12B1 /* json_format.h */; };
 		2832868D1A8AB2B4001E12B1 /* json_format.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2832868B1A8AB2B4001E12B1 /* json_format.cpp */; };
 		283CC09A1A896E0C0031C771 /* threesaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283CC0991A896E0C0031C771 /* threesaver.cpp */; };
-		2863C4241A8FBE0900BC7B60 /* scene_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2863C4221A8FBE0900BC7B60 /* scene_helper.cpp */; };
-		2863C4251A8FBE0900BC7B60 /* scene_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 2863C4231A8FBE0900BC7B60 /* scene_helper.h */; };
 		2863C4671A8FF75100BC7B60 /* threelogmessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 2863C4651A8FF75100BC7B60 /* threelogmessage.h */; };
 		28B7C00D1A896E4B00EC9111 /* libcommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 283CBD421A896D8A0031C771 /* libcommon.a */; };
 		28E87A721A897357002319C9 /* clean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28E87A5E1A897357002319C9 /* clean.cpp */; };
@@ -255,8 +253,6 @@
 		283CBD371A896D540031C771 /* threeio.lx */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = threeio.lx; sourceTree = BUILT_PRODUCTS_DIR; };
 		283CBD421A896D8A0031C771 /* libcommon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libcommon.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		283CC0991A896E0C0031C771 /* threesaver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = threesaver.cpp; sourceTree = "<group>"; };
-		2863C4221A8FBE0900BC7B60 /* scene_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scene_helper.cpp; sourceTree = "<group>"; };
-		2863C4231A8FBE0900BC7B60 /* scene_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scene_helper.h; sourceTree = "<group>"; };
 		2863C4651A8FF75100BC7B60 /* threelogmessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threelogmessage.h; sourceTree = "<group>"; };
 		28E87A5E1A897357002319C9 /* clean.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = clean.cpp; sourceTree = "<group>"; };
 		28E87A5F1A897357002319C9 /* cwrap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cwrap.cpp; sourceTree = "<group>"; };
@@ -508,8 +504,6 @@
 				28E87C451A897870002319C9 /* threesaver.h */,
 				283CC0991A896E0C0031C771 /* threesaver.cpp */,
 				2863C4651A8FF75100BC7B60 /* threelogmessage.h */,
-				2863C4231A8FBE0900BC7B60 /* scene_helper.h */,
-				2863C4221A8FBE0900BC7B60 /* scene_helper.cpp */,
 				2832868A1A8AB2B4001E12B1 /* json_format.h */,
 				2832868B1A8AB2B4001E12B1 /* json_format.cpp */,
 				28E87A861A897369002319C9 /* include */,
@@ -780,7 +774,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2863C4251A8FBE0900BC7B60 /* scene_helper.h in Headers */,
 				28E87C461A897870002319C9 /* threesaver.h in Headers */,
 				2863C4671A8FF75100BC7B60 /* threelogmessage.h in Headers */,
 				2832868C1A8AB2B4001E12B1 /* json_format.h in Headers */,
@@ -1075,7 +1068,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2832868D1A8AB2B4001E12B1 /* json_format.cpp in Sources */,
-				2863C4241A8FBE0900BC7B60 /* scene_helper.cpp in Sources */,
 				283CC09A1A896E0C0031C771 /* threesaver.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -12,14 +12,17 @@ class JSONFormat : public CLxFileFormat
 public:
     JSONFormat();
     virtual ~JSONFormat();
-    
+
     virtual bool ff_Open(const char *) override;
     virtual void ff_Enable(bool) override;
     virtual bool ff_HasError() override;
     virtual void ff_Cleanup() override;
-    
+
     const char*	 file_name;
-    
+
+    const unsigned precision() const;
+    void precision(unsigned);
+
     void Write(std::nullptr_t);
     void Write(bool);
     void Write(int);
@@ -40,24 +43,32 @@ public:
     void StartArray();
     void StartArray(std::string);
     void EndArray();
-    
+
 private:
     
+    // prevent implicit argument type conversion
+    template<typename T>
+    void Write(T);
+    template<typename T>
+    void Write(std::string, T);
+
     const std::string kIndentWith = "\t";
     const std::string kLineBreakWith = "\n";
-    
+
     enum Context {
         kArray,
         kObject,
         kValue
     };
-    
+
+    unsigned precision_ = 13;
+    const char* precision_format_ = "%.13g";
     bool enabled_ = false;
     std::ofstream* os_ = nullptr;
     std::stack<Context> context_;
     bool has_value_ = false;
     unsigned indention_ = 0;
-    
+
     void BeforeWrite();
     void WriteIndention();
     void Newline();
