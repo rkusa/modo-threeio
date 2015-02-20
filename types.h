@@ -12,6 +12,42 @@
 #include <vector>
 #include <map>
 
+#include <lx_mesh.hpp>
+#include <lx_visitor.hpp>
+
+struct Vector2
+{
+    Vector2(float x, float y) : x(x), y(y) {
+    }
+    
+    Vector2(float v[2]) : x(v[0]), y(v[1]) {
+    }
+    
+    bool operator==(const Vector2& rhs)
+    {
+        return (x == rhs.x &&
+                y == rhs.y);
+    }
+    
+    bool operator!=(const Vector2& rhs)
+    {
+        return !(*this == rhs);
+    }
+    
+    bool operator<(const Vector2& rhs) const
+    {
+        if (x > rhs.x) { return false; }
+        if (x < rhs.x) { return true; }
+        
+        if (y > rhs.y) { return false; }
+        if (y < rhs.y) { return true; }
+        
+        return false;
+    }
+    
+    const float x, y;
+};
+
 struct Vector3
 {
     Vector3(double x, double y, double z) : x(x), y(y), z(z) {
@@ -50,12 +86,14 @@ struct Vector3
 };
 
 struct Vertex {
-    Vertex(double p[3], double n[3]) : position_(p), normal_(n) {
+    Vertex(double p[3], double n[3], float uv[2]) : position_(p), normal_(n), uv_(uv) {
     }
     
     bool operator==(const Vertex& rhs)
     {
-        return position_ == rhs.position() && normal_ == rhs.normal();
+        return position_ == rhs.position() &&
+               normal_ == rhs.normal() &&
+               uv_ == rhs.uv();
     }
     
     bool operator!=(const Vertex& rhs)
@@ -73,6 +111,10 @@ struct Vertex {
             return true;
         }
         
+        if (uv_ < rhs.uv()) {
+            return true;
+        }
+        
         return false;
     }
     
@@ -84,9 +126,14 @@ struct Vertex {
         return normal_;
     }
     
+    const Vector2 uv() const {
+        return uv_;
+    }
+    
 private:
     Vector3 position_;
     Vector3 normal_;
+    Vector2 uv_;
 };
 
 template <class T>
@@ -124,6 +171,33 @@ private:
     std::map<T, unsigned> map_;
     std::vector<T> order_; // TODO: disposed?
     unsigned index_ = 0;
+};
+
+class MeshMapVisitor : public CLxImpl_AbstractVisitor
+{
+public:
+    MeshMapVisitor(CLxUser_MeshMap *theMeshMap)
+    {
+        mesh_map_ = theMeshMap;
+    }
+    
+    const std::vector<const std::string> names() const {
+        return names_;
+    }
+    
+private:
+    CLxUser_MeshMap *mesh_map_;
+    std::vector<const std::string> names_;
+    
+    virtual LxResult Evaluate ()
+    {
+        const char *name;
+        if (LXx_OK (mesh_map_->Name(&name))) {
+            names_.push_back(std::string(name));
+        }
+        
+        return LXe_OK;
+    }
 };
 
 #endif /* defined(__threeio__types__) */

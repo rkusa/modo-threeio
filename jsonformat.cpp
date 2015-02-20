@@ -17,7 +17,9 @@ bool JSONFormat::ff_Open(const char *filename)
 {
     ff_Cleanup();
     
-    file_name = filename;
+    
+    filename_ = filename;
+    file_name = filename_.c_str();
     
     os_ = new std::ofstream;
     os_->open(file_name, std::ifstream::out);
@@ -38,7 +40,7 @@ bool JSONFormat::ff_HasError()
 
 void JSONFormat::ff_Cleanup()
 {
-    file_name = nullptr;
+    filename_ = "";
     if (os_) {
         delete os_;
         os_ = nullptr;
@@ -158,6 +160,11 @@ void morphNumericString(char *s) {
     }
 }
 
+void JSONFormat::Write(float val)
+{
+    Write((double)val);
+}
+
 void JSONFormat::Write(double val)
 {
     ENABLED
@@ -224,6 +231,59 @@ void JSONFormat::Write(std::string val)
     Write(val.c_str());
 }
 
+inline void a3_to_a4(unsigned char * a4, unsigned char * a3) {
+    a4[0] = (a3[0] & 0xfc) >> 2;
+    a4[1] = ((a3[0] & 0x03) << 4) + ((a3[1] & 0xf0) >> 4);
+    a4[2] = ((a3[1] & 0x0f) << 2) + ((a3[2] & 0xc0) >> 6);
+    a4[3] = (a3[2] & 0x3f);
+}
+
+void JSONFormat::Write(std::ifstream& is, std::string type)
+{
+    ENABLED
+    
+    BeforeWrite();
+    
+    *os_ << '"';
+    *os_ << "data:" + type + ";base64,";
+    
+    // thanks to https://github.com/adamvr/arduino-base64/blob/master/Base64.cpp
+    int i = 0, j = 0;
+    unsigned char a3[3];
+    unsigned char a4[4];
+    
+    while(!is.eof()) {
+        a3[i++] = is.get();
+        if(i == 3) {
+            a3_to_a4(a4, a3);
+            
+            for(i = 0; i < 4; i++) {
+                *os_ << kBase64Enc[a4[i]];
+            }
+            
+            i = 0;
+        }
+    }
+    
+    if(i) {
+        for(j = i; j < 3; j++) {
+            a3[j] = '\0';
+        }
+        
+        a3_to_a4(a4, a3);
+        
+        for(j = 0; j < i + 1; j++) {
+            *os_ << kBase64Enc[a4[i]];
+        }
+        
+        while((i++ < 3)) {
+            *os_ << '=';
+        }
+    }
+    
+    *os_ << '"';
+}
+
 void JSONFormat::WriteKey(std::string str)
 {
     ENABLED
@@ -239,6 +299,19 @@ void JSONFormat::WriteKey(std::string str)
     *os_ << (pretty_ ? ": " : ":");
     
     context_.push(kValue);
+}
+
+void JSONFormat::WriteColor(const LXtVector& color)
+{
+    ENABLED
+    
+    BeforeWrite();
+    
+    int val = ((int(color[0] * 255) & 0xff) << 16) +
+              ((int(color[1] * 255) & 0xff) << 8) +
+              ((int(color[2] * 255) & 0xff));
+    
+    *os_ << val;
 }
 
 void JSONFormat::Property(std::string key, bool val)
@@ -257,6 +330,11 @@ void JSONFormat::Property(std::string key, unsigned val)
 {
     WriteKey(key);
     Write(val);
+}
+
+void JSONFormat::Property(std::string key, float val)
+{
+    Property(key, (double)val);
 }
 
 void JSONFormat::Property(std::string key, double val)
@@ -319,7 +397,7 @@ void JSONFormat::StartArray()
 {
     ENABLED
     
-    assert(context_.size() == 0 || context_.top() == kValue);
+    assert(context_.size() == 0 || context_.top() == kValue || context_.top() == kArray);
     
     BeforeWrite();
     

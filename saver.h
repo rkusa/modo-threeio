@@ -1,6 +1,8 @@
 #ifndef __threeio__threesaver__
 #define __threeio__threesaver__
 
+#include <set>
+
 #include <lx_action.hpp>
 #include <lxu_scene.hpp>
 
@@ -58,6 +60,8 @@ private:
     
     constexpr static const char* const kUserValueSaveHidden = "threeio.save.hidden";
     constexpr static const char* const kUserValueSaveNormals = "threeio.save.normals";
+    constexpr static const char* const kUserValueSaveUVs = "threeio.save.uvs";
+    constexpr static const char* const kUserValueEmbedImages = "threeio.embed.images";
     constexpr static const char* const kUserValueGeometryType = "threeio.geometry.type";
     constexpr static const char* const kUserValuePrecisionEnabled = "threeio.precision.enabled";
     constexpr static const char* const kUserValuePrecisionValue = "threeio.precision.value";
@@ -66,7 +70,8 @@ private:
     enum PolyPass
     {
         kPolypassBufferGeometry,
-        kPolypassGeometry
+        kPolypassGeometry,
+        kPolypassMaterial
     };
     
     PolyPass poly_pass_;
@@ -77,10 +82,13 @@ private:
         kGeometry = 1
     };
     
+    CLxUser_ChannelRead chan_;
     CLxUser_ChannelRead chan_xform_;
     
     bool opt_save_hidden_ = false;
-    bool opt_save_normals_ = false;
+    bool opt_save_normals_ = true;
+    bool opt_save_uvs_ = true;
+    bool opt_embed_images_ = false;
     GeometryType opt_geometry_type_ = kGeometry;
     bool opt_precision_enabled_ = false;
     unsigned opt_precision_value_ = 6;
@@ -91,16 +99,42 @@ private:
     
     UniqueOrderedSet<Vector3> positions_;
     UniqueOrderedSet<Vector3> normals_;
+    UniqueOrderedSet<Vector2> uvs_;
     UniqueOrderedSet<Vertex> vertices_;
     
-    bool WriteObject();
+    // pair of item mask and poly tag
+    typedef std::pair<std::string, std::string> ShaderMask;
+    typedef std::pair<ShaderMask, ILxUnknownID> ShaderLayer;
+    
+    std::map<std::string, std::set<ShaderMask>> material_map_;
+    std::set<ShaderMask> materials_;
+    std::set<std::string> images_;
+    std::string poly_tag_;
+    std::set<std::string> poly_tags_;
+    bool has_uvs_ = false;
+    
+    CLxUser_Scene scene_;
+    CLxUser_SceneService scene_service_;
+    std::vector<ShaderLayer> layer_;
+    unsigned current_layer_ = 0;
+    
+    void WriteObject();
+    void WriteMaterials();
+    void WriteMaterial(const ShaderMask);
+    void WriteTextures();
     void WriteScene();
     void WriteGeometries();
-    void WriteBufferGeometries();
+    void WriteGeometry();
+    void WriteBufferGeometry();
     
     const bool ItemVisibleForSave() const;
     const bool ItemSupported() const;
     void GetOptions();
+    
+    bool ScanShaderTree(const char*, const char*, const char* = 0);
+    bool GetNextLayer(ShaderLayer& layer);
+    bool TraverseLayers(CLxUser_Item&, ShaderMask, const char*, const char*, const char*);
+
 };
 
 #endif // /* defined(__threeio__threesaver__) */

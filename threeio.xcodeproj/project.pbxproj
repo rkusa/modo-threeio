@@ -1010,7 +1010,7 @@
 				283CC09C1A896E270031C771 /* PBXTargetDependency */,
 			);
 			name = threeio;
-			productName = io_scene_three;
+			productName = threeio;
 			productReference = 283CBD371A896D540031C771 /* threeio.lx */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
