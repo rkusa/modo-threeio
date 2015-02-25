@@ -4,6 +4,7 @@
 
 # build
 build
+kit/**/*.lx
 *.zip
 
 # xcode
