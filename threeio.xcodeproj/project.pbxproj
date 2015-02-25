@@ -12,6 +12,7 @@
 		283CC09A1A896E0C0031C771 /* saver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283CC0991A896E0C0031C771 /* saver.cpp */; };
 		2863C4671A8FF75100BC7B60 /* logmessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 2863C4651A8FF75100BC7B60 /* logmessage.h */; };
 		2863C4761A92A2B300BC7B60 /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = 2863C4751A92A2B300BC7B60 /* types.h */; };
+		288117151A9DB0EB006EF38B /* threeio.lx in Copy Files */ = {isa = PBXBuildFile; fileRef = 283CBD371A896D540031C771 /* threeio.lx */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		28B7C00D1A896E4B00EC9111 /* libcommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 283CBD421A896D8A0031C771 /* libcommon.a */; };
 		28E87A721A897357002319C9 /* clean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28E87A5E1A897357002319C9 /* clean.cpp */; };
 		28E87A731A897357002319C9 /* cwrap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28E87A5F1A897357002319C9 /* cwrap.cpp */; };
@@ -247,6 +248,20 @@
 			remoteInfo = common;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		288117141A9DB09C006EF38B /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "/Library/Application Support/Luxology/Content/Kits/threeio/osx";
+			dstSubfolderSpec = 0;
+			files = (
+				288117151A9DB0EB006EF38B /* threeio.lx in Copy Files */,
+			);
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2832868A1A8AB2B4001E12B1 /* jsonformat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsonformat.h; sourceTree = "<group>"; };
@@ -1003,6 +1018,7 @@
 				283CBD331A896D540031C771 /* Sources */,
 				283CBD341A896D540031C771 /* Frameworks */,
 				283CBD351A896D540031C771 /* Headers */,
+				288117141A9DB09C006EF38B /* Copy Files */,
 			);
 			buildRules = (
 			);

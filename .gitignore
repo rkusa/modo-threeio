@@ -2,8 +2,11 @@
 .*
 !.gitignore
 
-# xcode
+# build
 build
+*.zip
+
+# xcode
 xcuserdata
 *.xcodeproj/
 !*.xcodeproj/project.pbxproj
