@@ -86,6 +86,7 @@ void THREESceneSaver::WriteMaterials()
             //  try item mask + poly tag mask
             if (ScanShaderTree(it->c_str(), item_name.c_str(), source_name.c_str())) {
                 ShaderLayer layer;
+                std::string diffuse_map, specular_map, emissive_map, bump_map;
                 while (GetNextLayer(layer)) {
                     SetItem(layer.second);
                     
@@ -95,14 +96,47 @@ void THREESceneSaver::WriteMaterials()
                     }
                     
                     if (ItemIsA(LXsITYPE_IMAGEMAP)) {
-                        images_.insert(ItemIdentity());
+                        auto fx = LayerEffect();
+                        
+                        if (strcmp(fx, LXs_FX_DIFFCOLOR) == 0) {
+                            diffuse_map = ItemIdentity();
+                        } else if (strcmp(fx, LXs_FX_SPECCOLOR) == 0) {
+                            specular_map = ItemIdentity();
+                        } else if (strcmp(fx, LXs_FX_LUMICOLOR) == 0) {
+                            emissive_map = ItemIdentity();
+                        } else if (strcmp(fx, LXs_FX_BUMP) == 0) {
+                            bump_map = ItemIdentity();
+                        }
+                        
+                        mask = layer.first;
                     }
                     
                     // traversing stack from bottom to top,
                     // take the top most material
                     if (ItemIsA(LXsITYPE_ADVANCEDMATERIAL)) {
+                        diffuse_map = "";
+                        specular_map = "";
+                        emissive_map = "";
+                        bump_map = "";
+                        
                         mask = layer.first;
                     }
+                }
+                
+                if (!diffuse_map.empty()) {
+                    images_.insert(diffuse_map);
+                }
+                
+                if (!specular_map.empty()) {
+                    images_.insert(specular_map);
+                }
+                
+                if (!emissive_map.empty()) {
+                    images_.insert(emissive_map);
+                }
+                
+                if (!bump_map.empty()) {
+                    images_.insert(bump_map);
                 }
             }
             
@@ -207,6 +241,11 @@ void THREESceneSaver::WriteMaterial(const ShaderMask mask)
         
         if (ItemIsA(LXsITYPE_ADVANCEDMATERIAL)) {
             GetItem(material);
+            
+            diffuse_map = 0;
+            specular_map = 0;
+            emissive_map = 0;
+            bump_map = 0;
         } else if (ItemIsA (LXsITYPE_IMAGEMAP)) {
             auto fx = LayerEffect();
             
@@ -229,7 +268,7 @@ void THREESceneSaver::WriteMaterial(const ShaderMask mask)
     StartObject();
     Property("uuid", mask.first + "." + mask.second); // ItemIdentity());
     Property("type", "MeshPhongMaterial");
-    Property("name", ItemName());
+//    Property("name", ItemName());
     
     double amount;
     LXtVector color;
@@ -263,8 +302,10 @@ void THREESceneSaver::WriteMaterial(const ShaderMask mask)
     }
     
     // shininess
-    amount = ChanFloat(LXsICHAN_ADVANCEDMATERIAL_ROUGH);
-    Property("shininess", int((1.0 - amount) * 100));
+    if (amount > 0 || ChanFloat(LXsICHAN_ADVANCEDMATERIAL_SPECFRES) > 0) {
+        amount = ChanFloat(LXsICHAN_ADVANCEDMATERIAL_ROUGH);
+        Property("shininess", int((1.0 - amount) * 100));
+    }
     
     // emission
     amount = ChanFloat(LXsICHAN_ADVANCEDMATERIAL_RADIANCE);
