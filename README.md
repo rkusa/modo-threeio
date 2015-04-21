@@ -1,6 +1,6 @@
 # threeio
 
-A [three.js](https://github.com/mrdoob/three.js) JSON 4 format exporter for Modo 801.
+A [three.js](https://github.com/mrdoob/three.js) JSON (format 4) exporter for Modo 801.
 
 **Features:**
 
@@ -13,9 +13,9 @@ If you get an error that the export failed. Your scene propably contains ngons, 
 
 ![Settings](https://dl.dropboxusercontent.com/u/6699613/Github/modo-threeio-settings.png)
 
-## Call to arms
+## Status
 
-I've just started implementing this exporter. That is, consider to run into issues. You are welcome to open an issue or PR for what ever concern (issue, missing feature, suggestion, ...) you have.
+I've developed this plugin during a Modo trial period, but did not bought a license in the end. That is, I am propably not able to fix bugs that require testing in Modo.
 
 ## Build
 
@@ -26,7 +26,7 @@ Before you're able to build from source, you need to [download the Modo SDK](htt
 common include threeio
 ```
 
-Simply use the contained XCode or Visual Studio project or compile by calling:
+Simply use the contained XCode project, [create a Visual Studio project](http://sdk.luxology.com/wiki/Building_Plug-ins) or compile by calling:
 
 ```bash
 % make
@@ -42,7 +42,4 @@ Simply use the contained XCode or Visual Studio project or compile by calling:
 
 `make install` links the `threeio` kit into `/Library/Application Support/Luxology/Content/Kits`.
 
-## Install prebuild
-
-Maybe you find prebuild binaries [here](https://github.com/rkusa/modo-threeio/releases). If so, install them into `/Library/Application Support/Luxology/Content/Kits`. If not, feel free to open an issue offering your help for prebuilding binaries or just build it from source for your own.
 
